@@ -1,48 +1,46 @@
-CarbonSync™   Live Intelligence Platform
-by Daxem Labs   ·   Patent Filed GB2602946.2   ·   February 2026
+# CarbonSync™ — Live Intelligence Platform
+
+**by Daxem Labs · Patent Filed GB2602946.2**
 
 The first platform to directly measure, verify, and tokenise emissions reductions from UK HGV fleets in real time.
-LIVE DEMO
 
-Main dashboard:  jojibhatia.github.io/CarbonSync-Sandbox/carbonsync-demo.html
+---
 
+## Live Demo
 
+**Launch CarbonSync™ Sandbox →** [`https://jojibhatia.github.io/CarbonSync-Sandbox/`](https://jojibhatia.github.io/CarbonSync-Sandbox/)
 
-PLATFORM OVERVIEW
+### Pre-Configured Client Links
 
+| Client | Direct Link |
+|--------|-------------|
+| **Pickfords** (700 vehicles) | [`https://jojibhatia.github.io/CarbonSync-Sandbox/?company=Pickfords&fleet=700&sector=removals&autolaunch=true`](https://jojibhatia.github.io/CarbonSync-Sandbox/?company=Pickfords&fleet=700&sector=removals&autolaunch=true) |
+| **O'Donovan Waste** (85 vehicles) | [`https://jojibhatia.github.io/CarbonSync-Sandbox/?company=O%27Donovan+Waste&fleet=85&sector=waste&autolaunch=true`](https://jojibhatia.github.io/CarbonSync-Sandbox/?company=O%27Donovan+Waste&fleet=85&sector=waste&autolaunch=true) |
+| **Generic** (any fleet) | [`https://jojibhatia.github.io/CarbonSync-Sandbox/`](https://jojibhatia.github.io/CarbonSync-Sandbox/) (shows login screen) |
 
+---
 
-HOW IT WORKS
+## What Is This?
 
-Sentinel Rig  →  MQTT/4G  →  Dataloom™ AI  →  CarbonSync™ Ledger  →  Polygon  →  Carbon Market
+This is a fully interactive sandbox demonstration of the CarbonSync™ platform — built for fleet operators, investors, and pilot partners to experience the product before a Sentinel Rig is installed.
 
-When a real Sentinel Rig connects, nothing in the UI changes. The simulation data is simply replaced with live packets.
-CONNECTING A REAL SENTINEL RIG
+It runs on simulated data that mirrors exactly what the live platform produces when a real rig is connected. Every number, calculation, and credit figure uses real methodology — DEFRA 2024 emission factors, Verra VCS standards, and live ACX market pricing.
 
-Full technical specification for the embedded and backend engineer is in CarbonSync_Rig_Brief.docx.
-WebSocket endpoint:  wss://api.daxem.ai/rigs/live
-Developer Mode:  Press Ctrl+D inside the dashboard — shows WebSocket status, live connection log, packet schema, and computation constants. Simulation mode is on by default.
-FINANCIAL MODEL
+**When a real Sentinel Rig connects, nothing in the UI changes. The simulation data is simply replaced with live packets.**
 
+---
 
+## Platform Overview
 
-CBAM COMPLIANCE
+| Tab | What It Shows |
+|-----|---------------|
+| **Overview** | Live credits, fuel savings, revenue, and the full verification pipeline from sensor to blockchain |
+| **Live Telemetry** | Per-vehicle data feed — fuel flow, CO₂, OBD-II signals, cryptographic signatures |
+| **Carbon Credits** | Credit breakdown by source category, Verra VCS methodology, CBAM alignment |
+| **Blockchain Ledger** | Real-time ERC-1155 minting events on Polygon — transaction hashes, block numbers |
+| **Revenue** | 3-year financial projection, 70/15/10/5 revenue split, hardware payback period |
+| **⚠ CBAM Exposure** | UK Carbon Border Adjustment Mechanism liability calculator — live from January 2027 |
 
-The ⚠ CBAM Exposure tab calculates each fleet's liability under the UK Carbon Border Adjustment Mechanism, effective 1 January 2027.
-—  Without verified data:  HMRC default penalty rates applied to all emissions — highest possible charge
-—  With CarbonSync™:  Verified actual data = lowest possible CBAM charge + carbon credit income offsets liability
-—  UK ETS rate:  £40–£100/tonne — adjustable in the dashboard calculator
+---
 
-TECHNOLOGY
-
-
-
-ABOUT DAXEM LABS
-
-—  Stage:  Pre-pilot · Q2 2026 launch
-—  Strategic Pilot Partner:  TBA
-—  Target market:  UK HGV fleet operators — waste, logistics, construction, removals
-—  Patent:  GB2602946.2 — filed February 2026
-—  Contact:  daxem.ai
-
-CarbonSync™ and FerroGuard AI are trademarks of Daxem Labs. All rights reserved.
+## How It Works
