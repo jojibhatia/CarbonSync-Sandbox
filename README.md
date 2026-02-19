@@ -40,7 +40,7 @@ TECHNOLOGY
 ABOUT DAXEM LABS
 
 —  Stage:  Pre-pilot · Q2 2026 launch
-—  Pilot partner:  O'Donovan Waste Management
+—  Strategic Pilot Partner:  TBA
 —  Target market:  UK HGV fleet operators — waste, logistics, construction, removals
 —  Patent:  GB2602946.2 — filed February 2026
 —  Contact:  daxem.ai
