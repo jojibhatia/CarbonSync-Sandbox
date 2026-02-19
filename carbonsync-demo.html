@@ -1,0 +1,2492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CarbonSync™ — Live Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080B0E;
+    --dark: #0D1117;
+    --panel: #111820;
+    --border: #1E2D3D;
+    --border-bright: #2A4060;
+    --green: #00FF87;
+    --green-dim: #00CC6A;
+    --green-glow: rgba(0,255,135,0.15);
+    --green-faint: rgba(0,255,135,0.05);
+    --blue: #0EA5E9;
+    --blue-dim: #0284C7;
+    --amber: #F59E0B;
+    --red: #EF4444;
+    --text: #E2EDF7;
+    --text-dim: #7A9BB5;
+    --text-faint: #3D5A73;
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Syne', sans-serif;
+    --body: 'Instrument Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: var(--body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* LOGIN SCREEN */
+  #login-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .login-brand {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .login-brand .logo-mark {
+    width: 56px;
+    height: 56px;
+    background: var(--green-glow);
+    border: 1px solid var(--green);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 0 40px var(--green-glow);
+  }
+
+  .login-brand h1 {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .login-brand h1 span { color: var(--green); }
+
+  .login-brand p {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+
+  .login-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    width: 420px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    opacity: 0.6;
+  }
+
+  .login-box h2 {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .login-box p {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .form-group input, .form-group select {
+    width: 100%;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px var(--green-faint);
+  }
+
+  .form-group select option { background: var(--dark); }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--green);
+    color: var(--black);
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    font-family: var(--display);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+
+  .btn-primary:hover {
+    background: #00e07a;
+    box-shadow: 0 0 30px var(--green-glow);
+    transform: translateY(-1px);
+  }
+
+  .sandbox-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--amber);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .sandbox-badge::before {
+    content: '●';
+    animation: pulse-amber 2s infinite;
+  }
+
+  @keyframes pulse-amber {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* MAIN APP */
+  #app {
+    display: none;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* TOP NAV */
+  .topnav {
+    height: 56px;
+    background: rgba(13,17,23,0.95);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .nav-logo .mark {
+    width: 28px;
+    height: 28px;
+    background: var(--green-glow);
+    border: 1px solid var(--green);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .nav-logo span { color: var(--green); }
+
+  .nav-sep { width: 1px; height: 24px; background: var(--border); }
+
+  .nav-client {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  .nav-client strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .nav-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: 0.1em;
+  }
+
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse-green 2s infinite;
+    box-shadow: 0 0 8px var(--green);
+  }
+
+  @keyframes pulse-green {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  .nav-sandbox {
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--amber);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--dark);
+  }
+
+  .tab {
+    padding: 14px 20px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .tab:hover { color: var(--text-dim); }
+
+  .tab.active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+  }
+
+  /* MAIN CONTENT */
+  .content {
+    padding: 24px;
+    max-width: 1400px;
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    margin-bottom: 24px;
+  }
+
+  .section-header h2 {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .section-header p {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  /* STAT CARDS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .stat-card:hover { border-color: var(--border-bright); }
+
+  .stat-card.green { border-top: 2px solid var(--green); }
+  .stat-card.blue { border-top: 2px solid var(--blue); }
+  .stat-card.amber { border-top: 2px solid var(--amber); }
+  .stat-card.white { border-top: 2px solid #fff; }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .stat-value {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-value.green { color: var(--green); }
+  .stat-value.blue { color: var(--blue); }
+  .stat-value.amber { color: var(--amber); }
+
+  .stat-sub {
+    font-size: 11px;
+    color: var(--text-faint);
+    font-family: var(--mono);
+  }
+
+  .stat-delta {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green);
+  }
+
+  /* GRID 2COL */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  /* PANELS */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .panel-title {
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .panel-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .panel-body { padding: 20px; }
+
+  /* CHART AREA */
+  .chart-area {
+    height: 180px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    padding-top: 20px;
+  }
+
+  .chart-bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .chart-bar {
+    width: 100%;
+    border-radius: 3px 3px 0 0;
+    transition: height 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+  }
+
+  .chart-bar.emissions { background: rgba(239,68,68,0.4); border: 1px solid rgba(239,68,68,0.6); }
+  .chart-bar.credits { background: rgba(0,255,135,0.4); border: 1px solid var(--green); }
+
+  .chart-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-faint);
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  /* TELEMETRY FEED */
+  .telemetry-feed {
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.8;
+    max-height: 240px;
+    overflow-y: auto;
+  }
+
+  .tele-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 80px 60px;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(30,45,61,0.5);
+    align-items: center;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .tele-time { color: var(--text-faint); font-size: 10px; }
+  .tele-event { color: var(--text-dim); }
+  .tele-event strong { color: var(--text); font-weight: 500; }
+  .tele-value { color: var(--green); text-align: right; }
+  .tele-status { text-align: right; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .badge.ok { background: rgba(0,255,135,0.1); color: var(--green); border: 1px solid rgba(0,255,135,0.2); }
+  .badge.warn { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+  .badge.minted { background: rgba(14,165,233,0.1); color: var(--blue); border: 1px solid rgba(14,165,233,0.2); }
+
+  /* VEHICLE TABLE */
+  .vehicle-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .vehicle-table th {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-faint);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .vehicle-table td {
+    padding: 10px 12px;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(30,45,61,0.4);
+    font-family: var(--mono);
+  }
+
+  .vehicle-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .rig-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .rig-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .rig-dot.online { background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse-green 2s infinite; }
+  .rig-dot.offline { background: var(--text-faint); }
+
+  /* BLOCKCHAIN PANEL */
+  .blockchain-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .bc-entry {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: center;
+    transition: border-color 0.2s;
+  }
+
+  .bc-entry:hover { border-color: var(--border-bright); }
+
+  .bc-entry.new {
+    border-color: rgba(0,255,135,0.3);
+    animation: mintIn 0.6s ease;
+  }
+
+  @keyframes mintIn {
+    from { 
+      opacity: 0; 
+      border-color: var(--green);
+      box-shadow: 0 0 20px var(--green-glow);
+    }
+    to { 
+      opacity: 1; 
+      border-color: rgba(0,255,135,0.3);
+      box-shadow: none;
+    }
+  }
+
+  .bc-hash {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .bc-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .bc-meta strong { color: var(--text); }
+
+  .bc-vcu {
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--green);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .bc-vcu small {
+    display: block;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-faint);
+    font-weight: 400;
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    margin: 12px 0;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+
+  .progress-bar {
+    height: 6px;
+    background: var(--dark);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .progress-fill.green { background: linear-gradient(90deg, var(--green-dim), var(--green)); box-shadow: 0 0 8px var(--green-glow); }
+  .progress-fill.blue { background: linear-gradient(90deg, var(--blue-dim), var(--blue)); }
+  .progress-fill.amber { background: linear-gradient(90deg, #D97706, var(--amber)); }
+
+  /* REVENUE PANEL */
+  .revenue-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .rev-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(30,45,61,0.5);
+  }
+
+  .rev-row:last-child { border-bottom: none; }
+
+  .rev-label { font-size: 12px; color: var(--text-dim); }
+  .rev-value { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--text); }
+  .rev-value.green { color: var(--green); }
+  .rev-value.blue { color: var(--blue); }
+
+  /* PIPELINE STAGE */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 16px 0;
+  }
+
+  .pipe-step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+  }
+
+  .pipe-step::after {
+    content: '→';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-faint);
+    font-size: 12px;
+    z-index: 1;
+  }
+
+  .pipe-step:last-child::after { display: none; }
+
+  .pipe-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 6px;
+    font-size: 16px;
+    border: 2px solid;
+    transition: all 0.5s;
+  }
+
+  .pipe-icon.done {
+    background: var(--green-glow);
+    border-color: var(--green);
+    box-shadow: 0 0 16px var(--green-glow);
+  }
+
+  .pipe-icon.active {
+    background: rgba(14,165,233,0.1);
+    border-color: var(--blue);
+    animation: rotatingBorder 2s linear infinite;
+  }
+
+  .pipe-icon.pending {
+    background: transparent;
+    border-color: var(--border-bright);
+  }
+
+  @keyframes rotatingBorder {
+    0% { box-shadow: 0 0 0 0 rgba(14,165,233,0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(14,165,233,0); }
+    100% { box-shadow: 0 0 0 0 rgba(14,165,233,0); }
+  }
+
+  .pipe-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+
+  /* HIDDEN TABS */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ONBOARDING */
+  .onboard-step {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .step-number {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 28px;
+    height: 28px;
+    background: var(--dark);
+    border: 1px solid var(--border-bright);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+
+  .step-number.done {
+    background: var(--green-glow);
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .onboard-step h3 {
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .onboard-step p {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* MINI CHART */
+  svg text { font-family: var(--mono); }
+
+  /* ANIMATE IN */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up:nth-child(1) { animation-delay: 0.05s; }
+  .fade-up:nth-child(2) { animation-delay: 0.1s; }
+  .fade-up:nth-child(3) { animation-delay: 0.15s; }
+  .fade-up:nth-child(4) { animation-delay: 0.2s; }
+
+  /* CREDIT TICKER */
+  .credit-ticker {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 4px 0;
+  }
+
+  .ticker-val {
+    font-family: var(--display);
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--green);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(0,255,135,0.3);
+    transition: all 0.3s;
+  }
+
+  .ticker-unit {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* POLYGON BADGE */
+  .polygon-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(130,71,229,0.1);
+    border: 1px solid rgba(130,71,229,0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #A78BFA;
+    letter-spacing: 0.05em;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--panel);
+    border: 1px solid var(--green);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--green);
+    z-index: 999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 0 30px var(--green-glow);
+    max-width: 320px;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .toast-title { font-weight: 500; margin-bottom: 2px; }
+  .toast-sub { color: var(--text-dim); font-size: 10px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-brand">
+    <div class="logo-mark">⬡</div>
+    <h1>Carbon<span>Sync</span>™</h1>
+    <p>by Daxem Labs · Patent Filed GB2602946.2</p>
+  </div>
+
+  <div class="login-box">
+    <div class="sandbox-badge">● Sandbox Mode</div>
+    <h2>Fleet Operator Access</h2>
+    <p>Sign in to view your fleet's live carbon intelligence, credit generation, and tokenisation pipeline.</p>
+
+    <div class="form-group">
+      <label>Company Name</label>
+      <input type="text" id="company-input" placeholder="e.g. Pickfords, O'Donovan Waste..." value="">
+    </div>
+    <div class="form-group">
+      <label>Fleet Sector</label>
+      <select id="sector-select">
+        <option value="removals">Removals & Logistics</option>
+        <option value="waste">Waste Collection</option>
+        <option value="construction">Construction</option>
+        <option value="distribution">Distribution & Freight</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Number of HGVs in Fleet</label>
+      <input type="number" id="fleet-input" placeholder="e.g. 700" value="700" min="1" max="5000">
+    </div>
+    <button class="btn-primary" onclick="launchApp()">Launch My CarbonSync™ Dashboard →</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <nav class="topnav">
+    <div class="nav-logo">
+      <div class="mark">⬡</div>
+      Carbon<span>Sync</span>™
+    </div>
+    <div class="nav-sep"></div>
+    <div class="nav-client">Fleet: <strong id="nav-company">—</strong> &nbsp;·&nbsp; <strong id="nav-fleet">—</strong> vehicles</div>
+    <div class="nav-right">
+      <div class="live-indicator"><div class="live-dot"></div>SENTINEL RIGS LIVE</div>
+      <div class="polygon-badge">⬡ Polygon Mainnet</div>
+      <div class="nav-sandbox">Sandbox</div>
+      <div id="rig-connect-btn" title="Connect real Sentinel Rig" onclick="connectRealRig()" style="cursor:pointer;background:rgba(14,165,233,0.08);border:1px solid rgba(14,165,233,0.2);border-radius:20px;padding:3px 10px;font-family:var(--mono);font-size:10px;color:var(--blue);letter-spacing:0.08em;text-transform:uppercase;">⬡ Connect Rig</div>
+    </div>
+  </nav>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('overview')">Overview</div>
+    <div class="tab" onclick="switchTab('telemetry')">Live Telemetry</div>
+    <div class="tab" onclick="switchTab('credits')">Carbon Credits</div>
+    <div class="tab" onclick="switchTab('blockchain')">Blockchain Ledger</div>
+    <div class="tab" onclick="switchTab('revenue')">Revenue</div>
+    <div class="tab" onclick="switchTab('cbam')" style="color:var(--red);border-bottom:2px solid transparent;" id="cbam-tab-btn">⚠ CBAM Exposure</div>
+  </div>
+
+  <!-- OVERVIEW TAB -->
+  <div class="content tab-content active" id="tab-overview">
+    <div class="section-header" style="margin-top:8px;">
+      <h2>Fleet Intelligence Overview</h2>
+      <p id="overview-sub">Real-time emissions capture, verification, and credit generation across your fleet.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card green fade-up">
+        <div class="stat-label">Credits Generated (MTD)</div>
+        <div class="stat-value green" id="stat-credits">0.0</div>
+        <div class="stat-sub">tCO₂e · Verified</div>
+        <div class="stat-delta" id="delta-credits">+0.0 today</div>
+      </div>
+      <div class="stat-card blue fade-up">
+        <div class="stat-label">Fuel Saved (MTD)</div>
+        <div class="stat-value blue" id="stat-fuel">0</div>
+        <div class="stat-sub">litres · Fleet-wide</div>
+      </div>
+      <div class="stat-card amber fade-up">
+        <div class="stat-label">Revenue Generated</div>
+        <div class="stat-value amber" id="stat-revenue">£0</div>
+        <div class="stat-sub">Your 70% share · MTD</div>
+      </div>
+      <div class="stat-card white fade-up">
+        <div class="stat-label">Rigs Online</div>
+        <div class="stat-value" id="stat-rigs">0/0</div>
+        <div class="stat-sub">Sentinel units active</div>
+      </div>
+    </div>
+
+    <!-- Pipeline -->
+    <div class="panel fade-up" style="margin-bottom:16px;">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Verification Pipeline</div>
+          <div class="panel-sub">Sensor → Dataloom™ AI → CarbonSync™ Ledger → Polygon Blockchain</div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="pipeline">
+          <div class="pipe-step">
+            <div class="pipe-icon done">📡</div>
+            <div class="pipe-label">Sentinel Rig<br>Capture</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-icon done">🧠</div>
+            <div class="pipe-label">Dataloom™<br>AI Validation</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-icon active">🔐</div>
+            <div class="pipe-label">Cryptographic<br>Signing</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-icon active">⬡</div>
+            <div class="pipe-label">Polygon<br>Minting</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-icon pending">💰</div>
+            <div class="pipe-label">Market<br>Settlement</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px;">
+          <div>
+            <div class="progress-label"><span>Capture Rate</span><span id="p-capture">0%</span></div>
+            <div class="progress-bar"><div class="progress-fill green" id="pb-capture" style="width:0%"></div></div>
+          </div>
+          <div>
+            <div class="progress-label"><span>Validation Score</span><span id="p-valid">0%</span></div>
+            <div class="progress-bar"><div class="progress-fill blue" id="pb-valid" style="width:0%"></div></div>
+          </div>
+          <div>
+            <div class="progress-label"><span>Minting Queue</span><span id="p-mint">0%</span></div>
+            <div class="progress-bar"><div class="progress-fill amber" id="pb-mint" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2 fade-up">
+      <!-- Monthly emissions chart -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Emissions vs Credits (6-Month)</div>
+            <div class="panel-sub">tCO₂e · Fleet aggregate</div>
+          </div>
+          <div style="display:flex;gap:12px;font-family:var(--mono);font-size:10px;">
+            <span style="color:rgba(239,68,68,0.8);">■ Emissions</span>
+            <span style="color:var(--green);">■ Credits</span>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="chart-area" id="chart-bars"></div>
+          <div style="display:flex;gap:4px;margin-top:4px;" id="chart-labels"></div>
+        </div>
+      </div>
+
+      <!-- Recent activity -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Recent Activity</div>
+          <div class="panel-sub">Live feed</div>
+        </div>
+        <div class="panel-body" style="padding:12px;">
+          <div class="telemetry-feed" id="mini-feed"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELEMETRY TAB -->
+  <div class="content tab-content" id="tab-telemetry">
+    <div class="section-header" style="margin-top:8px;">
+      <h2>Live Sentinel Rig Telemetry</h2>
+      <p>Real-time data stream from all active Sentinel Rigs across your fleet. Each reading is cryptographically signed at source.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card green">
+        <div class="stat-label">Data Points (24h)</div>
+        <div class="stat-value green" id="tele-datapoints">0</div>
+        <div class="stat-sub">Signed MQTT packets</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">Anomalies Flagged</div>
+        <div class="stat-value blue" id="tele-anomalies">0</div>
+        <div class="stat-sub">Dataloom™ AI filtered</div>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-label">Avg Fuel Efficiency</div>
+        <div class="stat-value amber" id="tele-efficiency">0%</div>
+        <div class="stat-sub">vs fleet baseline</div>
+      </div>
+      <div class="stat-card white">
+        <div class="stat-label">OBD-II Signal Quality</div>
+        <div class="stat-value" id="tele-signal">99.2%</div>
+        <div class="stat-sub">4G/LTE uptime</div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-bottom:16px;">
+      <div class="panel-header">
+        <div class="panel-title">Vehicle Fleet Status</div>
+        <div class="panel-sub" id="fleet-online-count">Loading...</div>
+      </div>
+      <div class="panel-body" style="padding:0;">
+        <table class="vehicle-table" id="vehicle-table">
+          <thead>
+            <tr>
+              <th>Vehicle ID</th>
+              <th>Reg</th>
+              <th>Status</th>
+              <th>Fuel Flow (L/h)</th>
+              <th>CO₂e (kg)</th>
+              <th>Credits Today</th>
+              <th>Route</th>
+              <th>Rig Signal</th>
+            </tr>
+          </thead>
+          <tbody id="vehicle-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Raw Data Stream</div>
+        <div class="panel-sub">MQTT packets · SHA-256 signed · AES-256 encrypted</div>
+      </div>
+      <div class="panel-body" style="padding:12px;">
+        <div class="telemetry-feed" id="raw-feed" style="max-height:300px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREDITS TAB -->
+  <div class="content tab-content" id="tab-credits">
+    <div class="section-header" style="margin-top:8px;">
+      <h2>Carbon Credit Generation</h2>
+      <p>Verified Carbon Units (VCUs) generated from your fleet's measured emissions reductions. Verra-methodology compliant.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card green">
+        <div class="stat-label">Total VCUs Generated</div>
+        <div class="credit-ticker">
+          <div class="ticker-val" id="vcu-total">0.00</div>
+          <div class="ticker-unit">tCO₂e</div>
+        </div>
+        <div class="stat-sub">Verified · Ready to sell</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">Credit Price (Market)</div>
+        <div class="stat-value blue">£<span id="credit-price">72</span></div>
+        <div class="stat-sub">per tCO₂e · ACX index</div>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-label">Projected Annual</div>
+        <div class="stat-value amber" id="annual-proj">£0</div>
+        <div class="stat-sub">Your 70% share</div>
+      </div>
+      <div class="stat-card white">
+        <div class="stat-label">Verification Status</div>
+        <div class="stat-value" style="font-size:20px;">Verra<br>Pending</div>
+        <div class="stat-sub">Methodology validation</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Credit Generation Breakdown</div>
+          <div class="panel-sub">By reduction source</div>
+        </div>
+        <div class="panel-body">
+          <div class="progress-wrap">
+            <div class="progress-label"><span>Fuel Efficiency Improvements</span><span id="cr-fuel">0 tCO₂e</span></div>
+            <div class="progress-bar"><div class="progress-fill green" id="pcr-fuel" style="width:0%"></div></div>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-label"><span>Route Optimisation</span><span id="cr-route">0 tCO₂e</span></div>
+            <div class="progress-bar"><div class="progress-fill blue" id="pcr-route" style="width:0%"></div></div>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-label"><span>Idle Reduction</span><span id="cr-idle">0 tCO₂e</span></div>
+            <div class="progress-bar"><div class="progress-fill amber" id="pcr-idle" style="width:0%"></div></div>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-label"><span>Driver Behaviour</span><span id="cr-driver">0 tCO₂e</span></div>
+            <div class="progress-bar"><div class="progress-fill green" id="pcr-driver" style="width:0%"></div></div>
+          </div>
+
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+            <div class="revenue-breakdown">
+              <div class="rev-row">
+                <span class="rev-label">Gross Credit Value</span>
+                <span class="rev-value" id="rev-gross">£0</span>
+              </div>
+              <div class="rev-row">
+                <span class="rev-label">Your Share (70%)</span>
+                <span class="rev-value green" id="rev-yours">£0</span>
+              </div>
+              <div class="rev-row">
+                <span class="rev-label">Driver Pool (10%)</span>
+                <span class="rev-value" id="rev-driver">£0</span>
+              </div>
+              <div class="rev-row">
+                <span class="rev-label">Platform Fee (15%)</span>
+                <span class="rev-value" id="rev-platform">£0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Methodology Compliance</div>
+          <div class="panel-sub">Verra VCS · DEFRA 2024</div>
+        </div>
+        <div class="panel-body">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="bc-entry">
+              <div>
+                <div class="bc-meta"><strong>CO₂ Conversion Factor</strong></div>
+                <div class="bc-hash">DEFRA 2024 · UK Transport</div>
+              </div>
+              <div class="bc-vcu" style="color:var(--text);">2.68<small>kg/litre</small></div>
+            </div>
+            <div class="bc-entry">
+              <div>
+                <div class="bc-meta"><strong>Verification Standard</strong></div>
+                <div class="bc-hash">Verra Verified Carbon Standard · VCS</div>
+              </div>
+              <span class="badge warn">Pending</span>
+            </div>
+            <div class="bc-entry">
+              <div>
+                <div class="bc-meta"><strong>Measurement Method</strong></div>
+                <div class="bc-hash">Direct sensor · OBD-II · GPS correlated</div>
+              </div>
+              <span class="badge ok">Active</span>
+            </div>
+            <div class="bc-entry">
+              <div>
+                <div class="bc-meta"><strong>Audit Trail</strong></div>
+                <div class="bc-hash">SD card + blockchain · Tamper-evident</div>
+              </div>
+              <span class="badge ok">Secured</span>
+            </div>
+            <div class="bc-entry">
+              <div>
+                <div class="bc-meta"><strong>CBAM Alignment</strong></div>
+                <div class="bc-hash">EU Carbon Border Adjustment · 2027</div>
+              </div>
+              <span class="badge minted">Ready</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCKCHAIN TAB -->
+  <div class="content tab-content" id="tab-blockchain">
+    <div class="section-header" style="margin-top:8px;">
+      <h2>Blockchain Ledger</h2>
+      <p>Immutable on-chain record of all minted Verified Carbon Units. Each token is permanently linked to its source sensor data hash.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card green">
+        <div class="stat-label">Tokens Minted</div>
+        <div class="stat-value green" id="bc-minted">0</div>
+        <div class="stat-sub">ERC-1155 · Polygon</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">Chain Confirmations</div>
+        <div class="stat-value blue" id="bc-confirms">0</div>
+        <div class="stat-sub">Avg block time: 2.1s</div>
+      </div>
+      <div class="stat-card white">
+        <div class="stat-label">Gas Cost Total</div>
+        <div class="stat-value" id="bc-gas">$0.00</div>
+        <div class="stat-sub">Polygon · Low cost</div>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-label">Contract Address</div>
+        <div class="stat-value" style="font-size:11px;font-family:var(--mono);word-break:break-all;color:var(--amber);" id="bc-contract">0x71C7...</div>
+        <div class="stat-sub">Polygon Mainnet</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Minting Events</div>
+        <div class="panel-sub">Live · Polygon blockchain · ERC-1155 VCU tokens</div>
+      </div>
+      <div class="panel-body">
+        <div class="blockchain-entries" id="bc-entries"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVENUE TAB -->
+  <div class="content tab-content" id="tab-revenue">
+    <div class="section-header" style="margin-top:8px;">
+      <h2>Revenue Intelligence</h2>
+      <p>Projected and realised financial returns from your CarbonSync™ deployment.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card green">
+        <div class="stat-label">Annual Carbon Revenue</div>
+        <div class="stat-value green" id="rev-annual-carbon">£0</div>
+        <div class="stat-sub">Your 70% share</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">Annual Fuel Savings</div>
+        <div class="stat-value blue" id="rev-annual-fuel">£0</div>
+        <div class="stat-sub">Direct operational</div>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-label">Total Annual Benefit</div>
+        <div class="stat-value amber" id="rev-annual-total">£0</div>
+        <div class="stat-sub">Combined</div>
+      </div>
+      <div class="stat-card white">
+        <div class="stat-label">Hardware Payback</div>
+        <div class="stat-value" id="rev-payback">0 mo</div>
+        <div class="stat-sub">At £250/vehicle</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">3-Year Financial Projection</div>
+          <div class="panel-sub">Conservative · £60/tonne base</div>
+        </div>
+        <div class="panel-body">
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div>
+              <div class="progress-label"><span>Year 1 — Pilot + Validation</span><span id="y1-val">£0</span></div>
+              <div class="progress-bar" style="height:10px;"><div class="progress-fill green" id="y1-bar" style="width:0%"></div></div>
+            </div>
+            <div>
+              <div class="progress-label"><span>Year 2 — Scale Rollout</span><span id="y2-val">£0</span></div>
+              <div class="progress-bar" style="height:10px;"><div class="progress-fill blue" id="y2-bar" style="width:0%"></div></div>
+            </div>
+            <div>
+              <div class="progress-label"><span>Year 3 — Full Fleet + Credits</span><span id="y3-val">£0</span></div>
+              <div class="progress-bar" style="height:10px;"><div class="progress-fill amber" id="y3-bar" style="width:0%"></div></div>
+            </div>
+          </div>
+
+          <div style="margin-top:24px;padding:16px;background:var(--dark);border-radius:8px;border:1px solid var(--border);">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-bottom:8px;letter-spacing:0.08em;text-transform:uppercase;">Assumptions</div>
+            <div style="font-size:11px;color:var(--text-dim);line-height:1.8;font-family:var(--mono);">
+              CO₂ factor: 2.68 kg/litre · DEFRA 2024<br>
+              Credit price: £60-100/tonne · ACX market<br>
+              Efficiency gain: 18% · Conservative<br>
+              Avg distance: 45,000 km/vehicle/year<br>
+              Fuel consumption: 28 L/100km HGV avg
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Revenue Distribution</div>
+          <div class="panel-sub">Annual · Your share breakdown</div>
+        </div>
+        <div class="panel-body">
+          <div class="revenue-breakdown">
+            <div class="rev-row">
+              <span class="rev-label">Gross Carbon Credit Sales</span>
+              <span class="rev-value" id="dist-gross">£0</span>
+            </div>
+            <div class="rev-row">
+              <span class="rev-label">Your Fleet Share (70%)</span>
+              <span class="rev-value green" id="dist-fleet">£0</span>
+            </div>
+            <div class="rev-row">
+              <span class="rev-label">Driver Incentive Pool (10%)</span>
+              <span class="rev-value" id="dist-driver">£0</span>
+            </div>
+            <div class="rev-row">
+              <span class="rev-label">Daxem Platform Fee (15%)</span>
+              <span class="rev-value" id="dist-daxem">£0</span>
+            </div>
+            <div class="rev-row">
+              <span class="rev-label">Operational Reserve (5%)</span>
+              <span class="rev-value" id="dist-reserve">£0</span>
+            </div>
+          </div>
+
+          <div style="margin-top:16px;padding:16px;background:var(--green-faint);border:1px solid rgba(0,255,135,0.15);border-radius:8px;">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--green);margin-bottom:4px;letter-spacing:0.08em;text-transform:uppercase;">Plus Fuel Savings</div>
+            <div style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--text);" id="fuel-save-display">£0</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:2px;">Direct operational savings from 18% efficiency improvement</div>
+          </div>
+
+          <div style="margin-top:12px;padding:16px;background:rgba(14,165,233,0.05);border:1px solid rgba(14,165,233,0.15);border-radius:8px;">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--blue);margin-bottom:4px;letter-spacing:0.08em;text-transform:uppercase;">Hardware Cost</div>
+            <div style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--text);" id="hw-cost-display">£0</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:2px;">One-time · £250/vehicle inc. installation · <span id="payback-months">0</span> month payback</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- CBAM EXPOSURE TAB -->
+<div class="content tab-content" id="tab-cbam">
+  <div class="section-header" style="margin-top:8px;">
+    <h2 style="color:var(--red);">⚠ CBAM Compliance Exposure</h2>
+    <p>UK Carbon Border Adjustment Mechanism · Effective 1 January 2027 · What it costs you to do nothing vs. what CarbonSync™ saves you.</p>
+  </div>
+
+  <!-- URGENCY BANNER -->
+  <div style="background:linear-gradient(135deg,rgba(239,68,68,0.12),rgba(239,68,68,0.04));border:1px solid rgba(239,68,68,0.4);border-radius:12px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:20px;">
+    <div style="font-size:36px;flex-shrink:0;">⏱</div>
+    <div>
+      <div style="font-family:var(--display);font-size:17px;font-weight:700;color:var(--red);margin-bottom:4px;">CBAM goes live in <span id="cbam-countdown">—</span> days</div>
+      <div style="font-size:13px;color:var(--text-dim);line-height:1.5;">The UK Carbon Border Adjustment Mechanism takes effect <strong style="color:var(--text);">1 January 2027</strong>. Every tonne of unverified emissions your fleet generates will be priced at the prevailing UK ETS rate. <strong style="color:var(--amber);">Fleet operators importing or supplying goods across the UK–EU corridor face direct CBAM liability.</strong> Your data is the only defence.</div>
+    </div>
+    <div style="margin-left:auto;text-align:center;flex-shrink:0;">
+      <div style="font-family:var(--display);font-size:32px;font-weight:800;color:var(--red);" id="cbam-total-liability">£0</div>
+      <div style="font-family:var(--mono);font-size:10px;color:rgba(239,68,68,0.7);letter-spacing:0.08em;text-transform:uppercase;">Est. Annual Liability</div>
+    </div>
+  </div>
+
+  <!-- THREE AUDIENCE PANELS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px;">
+
+    <!-- FLEET OPERATORS -->
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+      <div style="background:rgba(239,68,68,0.08);border-bottom:1px solid rgba(239,68,68,0.2);padding:14px 18px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:20px;">🚛</span>
+        <div>
+          <div style="font-family:var(--display);font-size:13px;font-weight:700;color:var(--text);">Fleet Operators</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.08em;text-transform:uppercase;">What this means on the ground</div>
+        </div>
+      </div>
+      <div style="padding:18px;display:flex;flex-direction:column;gap:12px;">
+        <div style="background:var(--dark);border-radius:8px;padding:14px;border:1px solid var(--border);">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Without CarbonSync™</div>
+          <div style="font-size:12px;color:var(--text-dim);line-height:1.6;">
+            ❌ No verified emissions data<br>
+            ❌ Pay <strong style="color:var(--red);">default HMRC penalty rates</strong> — highest possible charge<br>
+            ❌ Manual compliance: <strong style="color:var(--red);">£3–5/tonne</strong> admin cost<br>
+            ❌ Customer contracts at risk — EU clients need your data<br>
+            ❌ CBAM liability lands as a <strong style="color:var(--red);">surprise tax bill</strong> Q1 2027
+          </div>
+        </div>
+        <div style="background:var(--green-faint);border-radius:8px;padding:14px;border:1px solid rgba(0,255,135,0.15);">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">With CarbonSync™</div>
+          <div style="font-size:12px;color:var(--text-dim);line-height:1.6;">
+            ✅ <strong style="color:var(--green);">Verified actual emissions</strong> — not default values<br>
+            ✅ Verified data = <strong style="color:var(--green);">lowest possible CBAM charge</strong><br>
+            ✅ Auto-generated CBAM-ready reports<br>
+            ✅ EU clients satisfied — you become the preferred carrier<br>
+            ✅ Carbon credits <strong style="color:var(--green);">offset your liability</strong> and generate profit
+          </div>
+        </div>
+        <div style="text-align:center;padding:12px;background:rgba(0,255,135,0.05);border-radius:8px;border:1px solid rgba(0,255,135,0.1);">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-bottom:4px;">NET ANNUAL SWING</div>
+          <div style="font-family:var(--display);font-size:24px;font-weight:800;color:var(--green);" id="fleet-net-swing">£0</div>
+          <div style="font-size:11px;color:var(--text-dim);">Liability avoided + credits earned</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CORPORATES -->
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+      <div style="background:rgba(14,165,233,0.08);border-bottom:1px solid rgba(14,165,233,0.2);padding:14px 18px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:20px;">🏢</span>
+        <div>
+          <div style="font-family:var(--display);font-size:13px;font-weight:700;color:var(--text);">Corporate Procurement</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.08em;text-transform:uppercase;">Supply chain & ESG exposure</div>
+        </div>
+      </div>
+      <div style="padding:18px;display:flex;flex-direction:column;gap:12px;">
+        <div style="background:var(--dark);border-radius:8px;padding:14px;border:1px solid var(--border);">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">The Supply Chain Problem</div>
+          <div style="font-size:12px;color:var(--text-dim);line-height:1.6;">
+            Under CBAM, <strong style="color:var(--amber);">you are liable for emissions in your supply chain</strong> — including transport. EU clients will demand verified carbon data from their UK logistics partners. If your carrier can't provide it, <strong style="color:var(--red);">you bear the CBAM cost</strong> or lose the contract.
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;color:var(--text-dim);">Scope 3 transport emissions</span>
+            <span style="font-family:var(--mono);font-size:12px;color:var(--red);" id="corp-scope3">0 tCO₂e</span>
+          </div>
+          <div style="background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;color:var(--text-dim);">Unverified CBAM exposure</span>
+            <span style="font-family:var(--mono);font-size:12px;color:var(--red);" id="corp-cbam-exp">£0</span>
+          </div>
+          <div style="background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;color:var(--text-dim);">ESG reporting gap</span>
+            <span class="badge warn">High Risk</span>
+          </div>
+          <div style="background:var(--green-faint);border:1px solid rgba(0,255,135,0.15);border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;color:var(--text-dim);">With CarbonSync™ carrier</span>
+            <span class="badge ok">Compliant</span>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--text-faint);font-family:var(--mono);line-height:1.6;padding:10px;background:var(--dark);border-radius:8px;border:1px solid var(--border);">
+          💡 Specifying CarbonSync-certified carriers in procurement terms eliminates your Scope 3 CBAM exposure and satisfies TCFD reporting requirements simultaneously.
+        </div>
+      </div>
+    </div>
+
+    <!-- INVESTORS / VCs -->
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+      <div style="background:rgba(245,158,11,0.08);border-bottom:1px solid rgba(245,158,11,0.2);padding:14px 18px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:20px;">📈</span>
+        <div>
+          <div style="font-family:var(--display);font-size:13px;font-weight:700;color:var(--text);">Investors & VCs</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.08em;text-transform:uppercase;">The market opportunity</div>
+        </div>
+      </div>
+      <div style="padding:18px;display:flex;flex-direction:column;gap:12px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div style="background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">
+            <div style="font-family:var(--display);font-size:20px;font-weight:800;color:var(--amber);">£50B+</div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;">UK CBAM addressable market</div>
+          </div>
+          <div style="background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">
+            <div style="font-family:var(--display);font-size:20px;font-weight:800;color:var(--red);">Jan 2027</div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;">Non-negotiable deadline</div>
+          </div>
+          <div style="background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">
+            <div style="font-family:var(--display);font-size:20px;font-weight:800;color:var(--green);">£40–60</div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;">UK ETS rate / tonne</div>
+          </div>
+          <div style="background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">
+            <div style="font-family:var(--display);font-size:20px;font-weight:800;color:var(--blue);">500k+</div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;">UK HGVs in scope</div>
+          </div>
+        </div>
+        <div style="background:var(--dark);border-radius:8px;padding:14px;border:1px solid var(--border);">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--amber);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Why CarbonSync™ wins this market</div>
+          <div style="font-size:12px;color:var(--text-dim);line-height:1.7;">
+            CBAM creates a <strong style="color:var(--text);">mandatory, recurring compliance spend</strong> for every UK fleet operator. CarbonSync™ is the only platform that converts that spend into a <strong style="color:var(--green);">profit centre</strong> — verified data that both eliminates the liability AND generates tradeable carbon credits.<br><br>
+            Competitors offer reporting tools. <strong style="color:var(--text);">We offer a revenue engine.</strong> That's a fundamentally different value proposition — and a defensible moat as CBAM expands post-2027.
+          </div>
+        </div>
+        <div style="text-align:center;padding:12px;background:rgba(245,158,11,0.05);border-radius:8px;border:1px solid rgba(245,158,11,0.15);">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-bottom:4px;">CBAM DRIVES DAXEM TAM TO</div>
+          <div style="font-family:var(--display);font-size:24px;font-weight:800;color:var(--amber);" id="vc-tam">£0</div>
+          <div style="font-size:11px;color:var(--text-dim);">UK fleet CBAM compliance market by 2027</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CBAM CALCULATOR -->
+  <div style="background:var(--panel);border:1px solid rgba(239,68,68,0.3);border-radius:12px;overflow:hidden;margin-bottom:16px;">
+    <div style="background:rgba(239,68,68,0.06);border-bottom:1px solid rgba(239,68,68,0.2);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-family:var(--display);font-size:14px;font-weight:700;">Your CBAM Liability Calculator</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:0.06em;text-transform:uppercase;margin-top:2px;">Based on your fleet · UK ETS rate · DEFRA 2024 methodology</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);">UK ETS Rate:</div>
+        <select id="ets-rate-select" onchange="recalcCBAM()" style="background:var(--dark);border:1px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--text);font-family:var(--mono);font-size:11px;outline:none;">
+          <option value="40">£40/t — Conservative</option>
+          <option value="50" selected>£50/t — Base case</option>
+          <option value="60">£60/t — Moderate</option>
+          <option value="75">£75/t — Elevated</option>
+          <option value="100">£100/t — High scenario</option>
+        </select>
+      </div>
+    </div>
+    <div style="padding:20px;">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;">
+        <div style="background:var(--dark);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:16px;text-align:center;">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Annual Fleet Emissions</div>
+          <div style="font-family:var(--display);font-size:26px;font-weight:800;color:var(--text);" id="cbam-total-tonnes">0</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-faint);">tCO₂e / year</div>
+        </div>
+        <div style="background:var(--dark);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:16px;text-align:center;">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--red);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">❌ CBAM Cost (No Data)</div>
+          <div style="font-family:var(--display);font-size:26px;font-weight:800;color:var(--red);" id="cbam-no-data-cost">£0</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-faint);">Default rate applied</div>
+        </div>
+        <div style="background:var(--dark);border:1px solid rgba(0,255,135,0.2);border-radius:10px;padding:16px;text-align:center;">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">✅ CBAM Cost (Verified)</div>
+          <div style="font-family:var(--display);font-size:26px;font-weight:800;color:var(--green);" id="cbam-with-data-cost">£0</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-faint);">Actual emissions only</div>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(0,255,135,0.08),rgba(14,165,233,0.08));border:1px solid rgba(0,255,135,0.25);border-radius:10px;padding:16px;text-align:center;">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">💰 Net CarbonSync™ Benefit</div>
+          <div style="font-family:var(--display);font-size:26px;font-weight:800;color:var(--green);" id="cbam-net-benefit">£0</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-faint);">Saved + credits earned</div>
+        </div>
+      </div>
+
+      <!-- VISUAL COMPARISON BAR -->
+      <div style="margin-bottom:20px;">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">Cost Comparison — Do Nothing vs. CarbonSync™</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-bottom:4px;">
+              <span>❌ Unverified — CBAM penalty rate applied to all emissions</span>
+              <span id="bar-label-no" style="color:var(--red);">£0</span>
+            </div>
+            <div style="height:28px;background:var(--dark);border-radius:4px;overflow:hidden;border:1px solid rgba(239,68,68,0.2);">
+              <div style="height:100%;background:linear-gradient(90deg,rgba(239,68,68,0.6),rgba(239,68,68,0.3));width:100%;display:flex;align-items:center;padding:0 10px;">
+                <span style="font-family:var(--mono);font-size:10px;color:rgba(239,68,68,0.9);">Full liability · No offset · No credit income</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-bottom:4px;">
+              <span>✅ CarbonSync™ — Verified data + credits offset liability</span>
+              <span id="bar-label-cv" style="color:var(--green);">£0 net cost</span>
+            </div>
+            <div style="height:28px;background:var(--dark);border-radius:4px;overflow:hidden;border:1px solid rgba(0,255,135,0.2);">
+              <div id="cbam-cv-bar" style="height:100%;background:linear-gradient(90deg,rgba(0,255,135,0.5),rgba(0,255,135,0.2));transition:width 1s ease;width:0%;display:flex;align-items:center;padding:0 10px;">
+                <span style="font-family:var(--mono);font-size:10px;color:rgba(0,255,135,0.9);">Reduced liability + carbon credit revenue</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- YEAR BY YEAR -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+        <div style="background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:14px;">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--amber);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">2026 — Prepare Now</div>
+          <div style="font-size:12px;color:var(--text-dim);line-height:1.7;">
+            Install Sentinel Rigs · Begin verified data capture · Build your baseline emissions profile · CBAM-ready reports auto-generated · <strong style="color:var(--text);">12 months of verified data before liability hits</strong>
+          </div>
+        </div>
+        <div style="background:var(--dark);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:14px;">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--red);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">2027 — CBAM Live</div>
+          <div style="font-size:12px;color:var(--text-dim);line-height:1.7;">
+            Verified data = lowest possible CBAM charge · First VCUs minted · Carbon credit revenue begins · Competitors paying <strong style="color:var(--red);">default penalty rates</strong> while you're profiting
+          </div>
+        </div>
+        <div style="background:var(--dark);border:1px solid rgba(0,255,135,0.15);border-radius:8px;padding:14px;">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">2028+ — Compounding Advantage</div>
+          <div style="font-size:12px;color:var(--text-dim);line-height:1.7;">
+            CBAM expands to more sectors · UK ETS rate rises · Your verified data becomes a <strong style="color:var(--green);">premium asset</strong> · EU clients pay more for CarbonSync-certified logistics
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM CTA ROW -->
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
+    <div style="background:linear-gradient(135deg,rgba(0,255,135,0.06),rgba(14,165,233,0.04));border:1px solid rgba(0,255,135,0.2);border-radius:12px;padding:20px 24px;display:flex;align-items:center;gap:20px;">
+      <div style="font-size:40px;">🛡️</div>
+      <div>
+        <div style="font-family:var(--display);font-size:16px;font-weight:700;margin-bottom:4px;">The Bottom Line</div>
+        <div style="font-size:13px;color:var(--text-dim);line-height:1.6;">CBAM turns fleet emissions from a hidden liability into a visible, quantified cost. CarbonSync™ is the only platform that <strong style="color:var(--green);">measures it precisely, reports it automatically, and converts the reduction into tradeable revenue</strong>. Every month without Sentinel Rigs is a month of unverifiable data — and unverifiable data means maximum CBAM exposure.</div>
+      </div>
+    </div>
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px;">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">Key Dates</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span style="font-size:12px;color:var(--text-dim);">Q4 2026</span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--amber);">Trial CBAM rate published</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span style="font-size:12px;color:var(--text-dim);">1 Jan 2027</span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--red);">UK CBAM goes live</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span style="font-size:12px;color:var(--text-dim);">2027+</span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--amber);">Quarterly ETS rate updates</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;">
+          <span style="font-size:12px;color:var(--text-dim);">2029</span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--red);">Indirect emissions added</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- DEVELOPER MODE PANEL (Ctrl+D to toggle) -->
+<div id="dev-panel" style="display:none;position:fixed;top:56px;right:0;width:420px;height:calc(100vh - 56px);background:#050810;border-left:1px solid #1E2D3D;z-index:500;overflow-y:auto;font-family:JetBrains Mono,monospace;font-size:11px;">
+  <div style="padding:16px 20px;border-bottom:1px solid #1E2D3D;display:flex;justify-content:space-between;align-items:center;">
+    <div><div style="color:#00FF87;font-size:12px;letter-spacing:0.05em;">DEV MODE — Engineers Only</div><div style="color:#3D5A73;font-size:10px;margin-top:2px;">Press Ctrl+D to close</div></div>
+    <div id="dev-version" style="color:#00FF87;font-size:10px;border:1px solid rgba(0,255,135,0.2);border-radius:10px;padding:2px 8px;">v1.2.0</div>
+  </div>
+  <div style="padding:16px 20px;border-bottom:1px solid #1E2D3D;">
+    <div style="color:#7A9BB5;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">WebSocket Status</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div id="dev-ws-dot" style="width:8px;height:8px;border-radius:50%;background:#F59E0B;"></div><div id="dev-ws-status" style="color:#F59E0B;">SIMULATION MODE</div></div>
+    <div id="dev-endpoint" style="color:#3D5A73;font-size:10px;word-break:break-all;margin-bottom:10px;">wss://api.daxem.ai/rigs/live</div>
+    <div style="display:flex;gap:8px;"><button onclick="enableLiveMode()" style="flex:1;background:rgba(0,255,135,0.1);border:1px solid rgba(0,255,135,0.3);border-radius:6px;padding:6px;color:#00FF87;cursor:pointer;font-size:10px;">Go Live</button><button onclick="enableSimMode()" style="flex:1;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:6px;padding:6px;color:#F59E0B;cursor:pointer;font-size:10px;">Simulation</button></div>
+  </div>
+  <div style="padding:16px 20px;border-bottom:1px solid #1E2D3D;">
+    <div style="color:#7A9BB5;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Packet Schema</div>
+    <div style="color:#3D5A73;font-size:10px;margin-bottom:8px;">EMBEDDED: Transmit this JSON via MQTT every 30s or on fuel pulse event.</div>
+    <pre style="background:#080B0E;border:1px solid #1E2D3D;border-radius:6px;padding:12px;color:#E2EDF7;font-size:10px;line-height:1.7;white-space:pre-wrap;">{ rigId, vehicleId, timestamp,
+  fuelPulse_L, obdRpm, obdSpeed_kmh,
+  obdEngineLoad, gpsLat, gpsLng,
+  gpsAccuracy_m, signalStrength,
+  sdCardHash, hash, firmwareVersion }</pre>
+  </div>
+  <div style="padding:16px 20px;border-bottom:1px solid #1E2D3D;">
+    <div style="color:#7A9BB5;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Computation Constants</div>
+    <div style="display:flex;flex-direction:column;gap:5px;font-size:10px;">
+      <div style="display:flex;justify-content:space-between;padding:5px 8px;background:#080B0E;border-radius:4px;"><span style="color:#7A9BB5;">CO2 factor</span><span style="color:#00FF87;">2.68 kg/L DEFRA 2024</span></div>
+      <div style="display:flex;justify-content:space-between;padding:5px 8px;background:#080B0E;border-radius:4px;"><span style="color:#7A9BB5;">Efficiency baseline</span><span style="color:#00FF87;">18% reduction</span></div>
+      <div style="display:flex;justify-content:space-between;padding:5px 8px;background:#080B0E;border-radius:4px;"><span style="color:#7A9BB5;">Credit price</span><span style="color:#00FF87;">72 GBP/tCO2e</span></div>
+      <div style="display:flex;justify-content:space-between;padding:5px 8px;background:#080B0E;border-radius:4px;"><span style="color:#7A9BB5;">Fleet share</span><span style="color:#00FF87;">70% gross credits</span></div>
+    </div>
+  </div>
+  <div style="padding:16px 20px;"><div style="color:#7A9BB5;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Connection Log</div><div id="dev-log"></div></div>
+</div>
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-title" id="toast-title"></div>
+  <div class="toast-sub" id="toast-sub"></div>
+</div>
+
+<script>
+// ============================================================
+// URL QUERY PARAM AUTO-POPULATION
+// ============================================================
+function getQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    company: params.get('company') || params.get('c') || '',
+    fleet: parseInt(params.get('fleet') || params.get('f')) || 0,
+    sector: params.get('sector') || params.get('s') || '',
+    autolaunch: params.get('autolaunch') === 'true' || params.get('auto') === '1'
+  };
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const q = getQueryParams();
+  if (q.company) document.getElementById('company-input').value = q.company;
+  if (q.fleet) document.getElementById('fleet-input').value = q.fleet;
+  if (q.sector) {
+    const sel = document.getElementById('sector-select');
+    const opt = Array.from(sel.options).find(o => o.value === q.sector);
+    if (opt) sel.value = q.sector;
+  }
+  // Auto-launch if param set (e.g. for pre-configured client links)
+  if (q.autolaunch && q.company) {
+    setTimeout(() => launchApp(), 600);
+  }
+});
+
+// ============================================================
+// CARBONSYNC™ SYSTEM CONFIGURATION
+// ============================================================
+// This block is the single source of truth for all engineers.
+// Frontend, backend, and embedded all read from here.
+// In production: set SIMULATION_MODE to false and provide WS_ENDPOINT.
+// ============================================================
+
+const CARBONSYNC_CONFIG = {
+
+  // ── BACKEND DEVELOPER ──────────────────────────────────────
+  // Build a WebSocket server at this endpoint.
+  // It must accept connections and broadcast Sentinel Rig packets
+  // in the JSON schema defined in PACKET_SCHEMA below.
+  // Auth: pass ?token=<JWT> as query param on connect.
+  WS_ENDPOINT: 'wss://api.daxem.ai/rigs/live',
+
+  // ── EMBEDDED / RIG ENGINEER ────────────────────────────────
+  // The Sentinel Rig must transmit JSON packets over MQTT to the
+  // backend, which then relays them via WebSocket to this frontend.
+  // Every packet MUST include a SHA-256 hash of its own contents,
+  // signed using the rig's private key (stored in secure element).
+  // Transmission interval: every 30 seconds, or on fuel pulse event.
+  PACKET_SCHEMA: {
+    rigId:          "SENT-001",           // Unique rig identifier — set at provisioning
+    vehicleId:      "PK001",              // Vehicle reg mapped in fleet config
+    timestamp:      1700000000000,        // Unix ms — from GPS module clock (NOT device clock)
+    fuelPulse_L:    1.234,               // Litres consumed since last packet — from flow sensor
+    obdRpm:         1450,                 // Engine RPM from OBD-II PID 0x0C
+    obdSpeed_kmh:   62,                   // Vehicle speed from OBD-II PID 0x0D
+    obdEngineLoad:  0.67,                 // Engine load % from OBD-II PID 0x04 (0.0–1.0)
+    gpsLat:         51.5074,             // GPS latitude — WGS84 decimal degrees
+    gpsLng:         -0.1278,             // GPS longitude — WGS84 decimal degrees
+    gpsAccuracy_m:  4.2,                 // GPS fix accuracy in metres
+    signalStrength: -73,                  // 4G RSSI in dBm (Quectel BG96)
+    sdCardHash:     "sha256:abc123...",   // SHA-256 of full local log entry on SD card
+    hash:           "sha256:xyz789...",   // SHA-256 of THIS packet — signed at source
+    firmwareVersion:"1.0.3"              // Sentinel Rig firmware version
+  },
+
+  // ── COMPUTATION CONSTANTS ──────────────────────────────────
+  // These must match the backend and any Verra audit submissions.
+  // Do NOT change without updating methodology documentation.
+  CO2_PER_LITRE_KG:     2.68,    // DEFRA 2024 diesel emission factor
+  EFFICIENCY_BASELINE:  0.18,    // 18% improvement target for credit calculation
+  CREDIT_PRICE_GBP:     72,      // £/tCO₂e — ACX voluntary market baseline
+  FLEET_SHARE:          0.70,    // 70% revenue to fleet operator
+  AVG_KM_PER_YEAR:      45000,   // Conservative HGV annual distance
+  FUEL_L_PER_100KM:     28,      // Conservative HGV consumption
+
+  // ── SIMULATION MODE ────────────────────────────────────────
+  // true  = run on synthetic data (safe for demos, no console errors)
+  // false = attempt live WebSocket connection (production only)
+  SIMULATION_MODE: true,
+
+  // ── RECONNECT POLICY ───────────────────────────────────────
+  RECONNECT_INTERVAL_MS: 5000,   // Retry every 5s if disconnected
+  MAX_RECONNECT_ATTEMPTS: 10,    // Give up after 10 attempts, stay in sim mode
+
+  // ── VERSION ────────────────────────────────────────────────
+  VERSION: '1.2.0',
+  BUILD:   'sandbox-Feb2026'
+};
+
+// ============================================================
+// WEBSOCKET CONNECTION LAYER
+// ============================================================
+let rigSocket = null;
+let rigConnected = false;
+let reconnectAttempts = 0;
+let devPanelVisible = false;
+const connectionLog = [];
+
+function logConnection(msg, type = 'info') {
+  const entry = { time: new Date().toTimeString().split(' ')[0], msg, type };
+  connectionLog.unshift(entry);
+  if (connectionLog.length > 20) connectionLog.pop();
+  updateDevPanel();
+}
+
+function connectRealRig() {
+  // If simulation mode is on, don't attempt — stay clean
+  if (CARBONSYNC_CONFIG.SIMULATION_MODE) {
+    logConnection('Simulation mode active — WebSocket disabled', 'sim');
+    updateRigConnectionUI(false);
+    return;
+  }
+
+  if (rigSocket) rigSocket.close();
+  logConnection(`Connecting to ${CARBONSYNC_CONFIG.WS_ENDPOINT}...`, 'info');
+
+  try {
+    rigSocket = new WebSocket(CARBONSYNC_CONFIG.WS_ENDPOINT);
+
+    rigSocket.onopen = () => {
+      rigConnected = true;
+      reconnectAttempts = 0;
+      logConnection('✓ Sentinel Rig connected — live data active', 'success');
+      updateRigConnectionUI(true);
+      showToast('🔌 Real Rig Connected', 'Live Sentinel Rig data stream active');
+    };
+
+    rigSocket.onmessage = (event) => {
+      try {
+        const packet = JSON.parse(event.data);
+        validateAndHandlePacket(packet);
+      } catch(e) {
+        logConnection(`Malformed packet: ${e.message}`, 'error');
+      }
+    };
+
+    rigSocket.onerror = () => {
+      rigConnected = false;
+      logConnection('WebSocket error — check endpoint and network', 'error');
+      updateRigConnectionUI(false);
+    };
+
+    rigSocket.onclose = () => {
+      rigConnected = false;
+      logConnection('Connection closed', 'warn');
+      updateRigConnectionUI(false);
+      // Auto-reconnect
+      if (reconnectAttempts < CARBONSYNC_CONFIG.MAX_RECONNECT_ATTEMPTS) {
+        reconnectAttempts++;
+        logConnection(`Reconnect attempt ${reconnectAttempts}/${CARBONSYNC_CONFIG.MAX_RECONNECT_ATTEMPTS}...`, 'warn');
+        setTimeout(connectRealRig, CARBONSYNC_CONFIG.RECONNECT_INTERVAL_MS);
+      } else {
+        logConnection('Max reconnects reached — staying in simulation mode', 'sim');
+      }
+    };
+
+  } catch(e) {
+    logConnection(`WebSocket unavailable: ${e.message}`, 'error');
+  }
+}
+
+// ── PACKET VALIDATION ──────────────────────────────────────
+// Validates incoming packet against expected schema before processing.
+// Rejects packets missing critical fields or with implausible values.
+function validateAndHandlePacket(packet) {
+  const required = ['rigId','vehicleId','timestamp','fuelPulse_L','hash'];
+  const missing = required.filter(k => !(k in packet));
+  if (missing.length) {
+    logConnection(`Rejected packet — missing: ${missing.join(', ')}`, 'error');
+    return;
+  }
+  // Sanity checks — flag anomalies
+  if (packet.fuelPulse_L > 50)  { logConnection(`⚠ Anomaly: fuelPulse_L=${packet.fuelPulse_L} exceeds 50L — flagged`, 'warn'); }
+  if (packet.fuelPulse_L < 0)   { logConnection(`⚠ Anomaly: negative fuel pulse rejected`, 'error'); return; }
+  if (!packet.hash.startsWith('sha256:')) { logConnection(`⚠ Warning: packet hash not sha256 format`, 'warn'); }
+
+  logConnection(`✓ ${packet.vehicleId} · ${packet.fuelPulse_L}L · ${packet.hash.substring(0,18)}...`, 'success');
+  handleRealRigPacket(packet);
+}
+
+/**
+ * REAL RIG PACKET HANDLER
+ * ─────────────────────────────────────────────────────────────
+ * EMBEDDED ENGINEER: This is exactly how the frontend processes
+ * your packet. Each fuel pulse is multiplied by 2.68 kg/L
+ * (DEFRA 2024) to get CO₂e. The credit is 18% of that figure —
+ * representing the verified reduction vs the unoptimised baseline.
+ *
+ * BACKEND DEVELOPER: This function is called once per packet.
+ * You must relay all packets from the MQTT broker to this
+ * WebSocket endpoint in real time. No batching — each packet
+ * must arrive individually so the UI updates live.
+ * ─────────────────────────────────────────────────────────────
+ */
+function handleRealRigPacket(packet) {
+  if (!packet || !packet.fuelPulse_L) return;
+
+  const co2_kg = packet.fuelPulse_L * CARBONSYNC_CONFIG.CO2_PER_LITRE_KG;
+  const co2_tonne = co2_kg / 1000;
+  const creditGenerated = co2_tonne * CARBONSYNC_CONFIG.EFFICIENCY_BASELINE;
+
+  state.creditsGenerated += creditGenerated;
+  state.fuelSaved += packet.fuelPulse_L * CARBONSYNC_CONFIG.EFFICIENCY_BASELINE;
+  state.dataPoints++;
+
+  const now = new Date(packet.timestamp || Date.now());
+  const time = now.toTimeString().split(' ')[0];
+  const row = `<div class="tele-row">
+    <span class="tele-time">${time}</span>
+    <span class="tele-event"><strong>${packet.vehicleId || packet.rigId}</strong> · LIVE · ${packet.hash ? '🔐 signed' : '⚠ unsigned'}</span>
+    <span class="tele-value">+${creditGenerated.toFixed(4)} tCO₂e</span>
+    <span class="tele-status"><span class="badge ok">LIVE</span></span>
+  </div>`;
+
+  ['mini-feed','raw-feed'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.insertAdjacentHTML('afterbegin', row); }
+  });
+}
+
+function updateRigConnectionUI(connected) {
+  const indicator = document.querySelector('.live-indicator');
+  if (!indicator) return;
+  if (connected) {
+    indicator.innerHTML = '<div class="live-dot"></div>SENTINEL RIG LIVE — REAL DATA';
+    indicator.style.color = 'var(--green)';
+  } else {
+    indicator.innerHTML = '<div class="live-dot" style="background:var(--amber);box-shadow:0 0 8px var(--amber);"></div>SIMULATION MODE';
+    indicator.style.color = 'var(--amber)';
+  }
+}
+
+// Attempt real rig connection on load (fails gracefully to simulation)
+window.addEventListener('load', () => {
+  connectRealRig();
+});
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  company: 'Pickfords',
+  sector: 'removals',
+  fleetSize: 700,
+  creditsGenerated: 0,
+  fuelSaved: 0,
+  revenueGenerated: 0,
+  rigsOnline: 0,
+  dataPoints: 0,
+  anomalies: 0,
+  tokensMinted: 0,
+  confirms: 0,
+  gasCost: 0,
+  feedEntries: [],
+  bcEntries: [],
+  vehicles: [],
+  tick: 0
+};
+
+const CREDIT_PRICE = 72;
+const CO2_FACTOR = 2.68;
+const EFFICIENCY_GAIN = 0.18;
+const FUEL_CONSUMPTION = 28; // L/100km
+const AVG_DISTANCE_KM = 45000;
+const HARDWARE_COST = 250;
+
+const VEHICLE_PREFIXES = {
+  removals: ['PK', 'PK', 'PF'],
+  waste: ['OD', 'WC', 'GR'],
+  construction: ['BT', 'CR', 'HL'],
+  distribution: ['XP', 'DL', 'FR']
+};
+
+const ROUTES = [
+  'M25 → A1 → Leeds', 'A406 → M11 → Cambridge', 'M4 → Bristol', 
+  'A3 → Southampton', 'M6 → Manchester', 'A14 → Felixstowe',
+  'M1 → Sheffield', 'A40 → Oxford', 'M27 → Bournemouth'
+];
+
+const EVENT_TYPES = [
+  { event: 'Fuel pulse recorded', val: () => (Math.random()*2.1+0.3).toFixed(3)+' L', badge: 'ok' },
+  { event: 'OBD-II heartbeat', val: () => (Math.random()*10+89).toFixed(1)+'%', badge: 'ok' },
+  { event: 'GPS + fuel correlated', val: () => '+'+( Math.random()*0.08+0.02).toFixed(3)+' tCO₂e', badge: 'minted' },
+  { event: 'Anomaly check passed', val: () => '0 flags', badge: 'ok' },
+  { event: 'Credit batch queued', val: () => (Math.random()*0.5+0.1).toFixed(2)+' tCO₂e', badge: 'minted' },
+  { event: 'SD card sync complete', val: () => 'SHA-256 ✓', badge: 'ok' },
+  { event: 'Idling alert', val: () => (Math.random()*8+2).toFixed(0)+'min excess', badge: 'warn' },
+  { event: 'Block confirmed on-chain', val: () => '#'+Math.floor(Math.random()*9e6+4e7), badge: 'minted' },
+];
+
+function randReg(prefix) {
+  const letters = 'ABCDEFGHJKLMNPRSTUVWXY';
+  const l = () => letters[Math.floor(Math.random()*letters.length)];
+  const n = () => Math.floor(Math.random()*9);
+  return prefix + n() + n() + ' ' + l() + l() + l();
+}
+
+function initVehicles() {
+  const prefix = VEHICLE_PREFIXES[state.sector] || ['FL'];
+  const count = Math.min(state.fleetSize, 20);
+  state.vehicles = Array.from({length: count}, (_, i) => ({
+    id: (prefix[i % prefix.length] || 'FL') + String(i+1).padStart(3,'0'),
+    reg: randReg(prefix[i % prefix.length] || 'FL'),
+    online: Math.random() > 0.05,
+    fuelFlow: (Math.random()*3+1).toFixed(2),
+    co2Today: (Math.random()*12+2).toFixed(1),
+    creditsToday: (Math.random()*0.8+0.05).toFixed(3),
+    route: ROUTES[Math.floor(Math.random()*ROUTES.length)],
+    signal: (Math.random()*10+88).toFixed(0)+'%'
+  }));
+}
+
+function generateHash() {
+  return '0x' + Array.from({length:64}, () => '0123456789abcdef'[Math.floor(Math.random()*16)]).join('');
+}
+
+function formatNum(n, decimals=0) {
+  return n.toLocaleString('en-GB', {minimumFractionDigits:decimals, maximumFractionDigits:decimals});
+}
+
+function formatGBP(n) {
+  if (n >= 1000000) return '£' + (n/1000000).toFixed(2) + 'M';
+  if (n >= 1000) return '£' + (n/1000).toFixed(0) + 'k';
+  return '£' + formatNum(n);
+}
+
+// ============================================================
+// LAUNCH
+// ============================================================
+function launchApp() {
+  const company = document.getElementById('company-input').value || 'Your Company';
+  const fleet = parseInt(document.getElementById('fleet-input').value) || 100;
+  const sector = document.getElementById('sector-select').value;
+
+  state.company = company;
+  state.fleetSize = fleet;
+  state.sector = sector;
+  state.rigsOnline = Math.floor(fleet * 0.97);
+
+  document.getElementById('nav-company').textContent = company;
+  document.getElementById('nav-fleet').textContent = formatNum(fleet);
+  document.getElementById('overview-sub').textContent = `Real-time emissions capture, verification, and credit generation across ${company}'s ${formatNum(fleet)}-vehicle fleet.`;
+
+  initVehicles();
+  buildVehicleTable();
+  buildChart();
+  calculateRevenue();
+
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  // Start simulation
+  setTimeout(() => {
+    animateProgressBars();
+    startTickLoop();
+  }, 300);
+
+  showToast('🛡️ CarbonSync™ Connected', `${formatNum(fleet)} Sentinel Rigs initialising for ${company}`);
+}
+
+// ============================================================
+// TICK LOOP — simulates live data
+// ============================================================
+function startTickLoop() {
+  setInterval(() => {
+    state.tick++;
+    const fleet = state.fleetSize;
+
+    // Increment credits at realistic rate
+    const creditTick = fleet * 0.000008 * (Math.random() * 0.4 + 0.8);
+    state.creditsGenerated += creditTick;
+    state.fuelSaved += creditTick / CO2_FACTOR * 1000;
+    state.revenueGenerated = state.creditsGenerated * CREDIT_PRICE * 0.70 * (state.tick / 100);
+    state.dataPoints += Math.floor(Math.random() * fleet * 0.3 + 5);
+    state.confirms += Math.floor(Math.random() * 3);
+
+    // Update stats
+    const el = id => document.getElementById(id);
+    el('stat-credits').textContent = formatNum(state.creditsGenerated, 1);
+    el('delta-credits').textContent = '+' + (creditTick * 100).toFixed(3) + ' now';
+    el('stat-fuel').textContent = formatNum(Math.floor(state.fuelSaved));
+    el('stat-revenue').textContent = formatGBP(state.creditsGenerated * CREDIT_PRICE * 0.70 * Math.min(state.tick/50, 1));
+    el('stat-rigs').textContent = state.rigsOnline + '/' + fleet;
+
+    // Telemetry stats
+    el('tele-datapoints').textContent = formatNum(state.dataPoints);
+    el('tele-anomalies').textContent = Math.floor(state.dataPoints * 0.002);
+    el('tele-efficiency').textContent = '+' + (EFFICIENCY_GAIN * 100 * Math.min(state.tick/80, 1)).toFixed(1) + '%';
+
+    // VCU ticker
+    el('vcu-total').textContent = formatNum(state.creditsGenerated, 2);
+    el('annual-proj').textContent = formatGBP(calcAnnualCredits() * CREDIT_PRICE * 0.70);
+
+    // BC stats
+    if (state.tick % 15 === 0) {
+      state.tokensMinted++;
+      state.gasCost += 0.0012;
+      el('bc-minted').textContent = state.tokensMinted;
+      el('bc-confirms').textContent = state.confirms;
+      el('bc-gas').textContent = '$' + state.gasCost.toFixed(4);
+      addBcEntry();
+    }
+
+    // Add feed entries
+    if (state.tick % 4 === 0) addFeedEntry();
+
+    // Update credit breakdown
+    updateCreditBreakdown();
+
+  }, 800);
+}
+
+function calcAnnualCredits() {
+  const fleet = state.fleetSize;
+  const annualFuel = fleet * AVG_DISTANCE_KM/100 * FUEL_CONSUMPTION;
+  const savedFuel = annualFuel * EFFICIENCY_GAIN;
+  return savedFuel * CO2_FACTOR / 1000;
+}
+
+function calcAnnualFuelSavings() {
+  const fleet = state.fleetSize;
+  const annualFuel = fleet * AVG_DISTANCE_KM/100 * FUEL_CONSUMPTION;
+  return annualFuel * EFFICIENCY_GAIN * 1.60; // £/litre
+}
+
+function calculateRevenue() {
+  const annualCredits = calcAnnualCredits();
+  const annualFuelSave = calcAnnualFuelSavings();
+  const annualGross = annualCredits * CREDIT_PRICE;
+  const fleetShare = annualGross * 0.70;
+  const hwCost = state.fleetSize * HARDWARE_COST;
+  const paybackMonths = Math.ceil(hwCost / (fleetShare/12 + annualFuelSave/12));
+
+  const el = id => document.getElementById(id);
+  el('rev-annual-carbon').textContent = formatGBP(fleetShare);
+  el('rev-annual-fuel').textContent = formatGBP(annualFuelSave);
+  el('rev-annual-total').textContent = formatGBP(fleetShare + annualFuelSave);
+  el('rev-payback').textContent = paybackMonths + ' mo';
+  el('payback-months').textContent = paybackMonths;
+
+  el('dist-gross').textContent = formatGBP(annualGross);
+  el('dist-fleet').textContent = formatGBP(annualGross * 0.70);
+  el('dist-driver').textContent = formatGBP(annualGross * 0.10);
+  el('dist-daxem').textContent = formatGBP(annualGross * 0.15);
+  el('dist-reserve').textContent = formatGBP(annualGross * 0.05);
+  el('fuel-save-display').textContent = formatGBP(annualFuelSave);
+  el('hw-cost-display').textContent = formatGBP(hwCost);
+
+  // Year projections
+  el('y1-val').textContent = formatGBP(fleetShare * 0.4 + annualFuelSave * 0.4);
+  el('y2-val').textContent = formatGBP(fleetShare * 1.1 + annualFuelSave);
+  el('y3-val').textContent = formatGBP(fleetShare * 1.4 + annualFuelSave * 1.2);
+  el('y1-bar').style.width = '30%';
+  el('y2-bar').style.width = '65%';
+  el('y3-bar').style.width = '100%';
+}
+
+function updateCreditBreakdown() {
+  const total = state.creditsGenerated;
+  const splits = [0.55, 0.22, 0.13, 0.10];
+  const labels = ['cr-fuel','cr-route','cr-idle','cr-driver'];
+  const bars = ['pcr-fuel','pcr-route','pcr-idle','pcr-driver'];
+  const widths = [85, 65, 40, 25];
+
+  splits.forEach((s, i) => {
+    document.getElementById(labels[i]).textContent = formatNum(total * s, 2) + ' tCO₂e';
+    document.getElementById(bars[i]).style.width = widths[i] + '%';
+  });
+
+  const gross = total * CREDIT_PRICE;
+  document.getElementById('rev-gross').textContent = formatGBP(gross);
+  document.getElementById('rev-yours').textContent = formatGBP(gross * 0.70);
+  document.getElementById('rev-driver').textContent = formatGBP(gross * 0.10);
+  document.getElementById('rev-platform').textContent = formatGBP(gross * 0.15);
+
+  // Mini stat on overview
+  document.getElementById('stat-revenue').textContent = formatGBP(gross * 0.70 * Math.min(state.tick/120, 1));
+}
+
+function addFeedEntry() {
+  const ev = EVENT_TYPES[Math.floor(Math.random() * EVENT_TYPES.length)];
+  const vehicle = state.vehicles[Math.floor(Math.random() * state.vehicles.length)];
+  const now = new Date();
+  const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
+
+  const row = `<div class="tele-row">
+    <span class="tele-time">${time}</span>
+    <span class="tele-event"><strong>${vehicle?.id || 'VH001'}</strong> · ${ev.event}</span>
+    <span class="tele-value">${ev.val()}</span>
+    <span class="tele-status"><span class="badge ${ev.badge}">${ev.badge}</span></span>
+  </div>`;
+
+  const feeds = ['mini-feed', 'raw-feed'];
+  feeds.forEach(feedId => {
+    const feed = document.getElementById(feedId);
+    if (!feed) return;
+    feed.insertAdjacentHTML('afterbegin', row);
+    // Keep max 50 entries
+    while (feed.children.length > 50) feed.removeChild(feed.lastChild);
+  });
+}
+
+function addBcEntry() {
+  const credits = (Math.random() * 2.5 + 0.3).toFixed(3);
+  const hash = generateHash();
+  const vehicle = state.vehicles[Math.floor(Math.random() * state.vehicles.length)];
+  const blockNum = Math.floor(Math.random() * 9000000 + 40000000);
+
+  const entry = document.createElement('div');
+  entry.className = 'bc-entry new';
+  entry.innerHTML = `
+    <div>
+      <div class="bc-meta"><strong>${credits} tCO₂e VCU</strong> · ${vehicle?.id || 'VH001'} · Block #${blockNum}</div>
+      <div class="bc-hash">${hash}</div>
+    </div>
+    <div class="bc-vcu">${credits}<small>tCO₂e</small></div>
+  `;
+
+  const container = document.getElementById('bc-entries');
+  if (container) {
+    container.insertBefore(entry, container.firstChild);
+    if (container.children.length > 12) container.removeChild(container.lastChild);
+    setTimeout(() => entry.classList.remove('new'), 1000);
+    showToast('⬡ VCU Minted on Polygon', `${credits} tCO₂e · ${hash.substring(0,18)}...`);
+  }
+}
+
+function buildVehicleTable() {
+  const tbody = document.getElementById('vehicle-tbody');
+  tbody.innerHTML = state.vehicles.map(v => `
+    <tr>
+      <td style="color:var(--text);font-weight:500;">${v.id}</td>
+      <td>${v.reg}</td>
+      <td><div class="rig-status"><div class="rig-dot ${v.online?'online':'offline'}"></div>${v.online?'Online':'Offline'}</div></td>
+      <td style="color:var(--green);">${v.fuelFlow}</td>
+      <td>${v.co2Today}</td>
+      <td style="color:var(--green);">${v.creditsToday}</td>
+      <td style="color:var(--text-dim);font-size:10px;">${v.route}</td>
+      <td style="color:var(--blue);">${v.signal}</td>
+    </tr>
+  `).join('');
+
+  const onlineCount = state.vehicles.filter(v => v.online).length;
+  document.getElementById('fleet-online-count').textContent = 
+    `${onlineCount}/${state.vehicles.length} displayed · ${state.fleetSize} total · ${state.rigsOnline} online`;
+}
+
+function buildChart() {
+  const months = ['Sep','Oct','Nov','Dec','Jan','Feb'];
+  const fleet = state.fleetSize;
+  const baseEmissions = fleet * 28 * 45000/100/10000 * CO2_FACTOR; // rough monthly
+
+  const barsContainer = document.getElementById('chart-bars');
+  const labelsContainer = document.getElementById('chart-labels');
+  barsContainer.innerHTML = '';
+  labelsContainer.innerHTML = '';
+
+  months.forEach((m, i) => {
+    const emissions = baseEmissions * (1 - i * 0.01) * (Math.random() * 0.1 + 0.95);
+    const credits = emissions * EFFICIENCY_GAIN * (i / 5) * (Math.random() * 0.1 + 0.95);
+    const maxH = 160;
+    const eH = Math.floor((emissions / (baseEmissions * 1.1)) * maxH);
+    const cH = Math.floor((credits / (baseEmissions * 1.1)) * maxH);
+
+    barsContainer.innerHTML += `
+      <div class="chart-bar-group">
+        <div style="display:flex;gap:2px;align-items:flex-end;height:${maxH}px;">
+          <div class="chart-bar emissions" style="width:14px;height:${eH}px;"></div>
+          <div class="chart-bar credits" style="width:14px;height:${cH}px;"></div>
+        </div>
+      </div>`;
+
+    labelsContainer.innerHTML += `<div class="chart-label" style="flex:1;text-align:center;">${m}</div>`;
+  });
+}
+
+function animateProgressBars() {
+  setTimeout(() => {
+    document.getElementById('p-capture').textContent = '98.7%';
+    document.getElementById('pb-capture').style.width = '98.7%';
+    document.getElementById('p-valid').textContent = '96.2%';
+    document.getElementById('pb-valid').style.width = '96.2%';
+    document.getElementById('p-mint').textContent = '78.4%';
+    document.getElementById('pb-mint').style.width = '78.4%';
+  }, 400);
+
+  // BC contract
+  document.getElementById('bc-contract').textContent = '0x71C7656EC7ab88b098defB751B7401B5f6d8976F';
+}
+
+// ============================================================
+// UI
+// ============================================================
+function switchTab(name) {
+  if (name === 'cbam') setTimeout(recalcCBAM, 100);
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    const tabs = ['overview','telemetry','credits','blockchain','revenue','cbam'];
+    t.classList.toggle('active', tabs[i] === name);
+  });
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function showToast(title, sub) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-sub').textContent = sub;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+// CBAM CALCULATIONS
+function recalcCBAM() {
+  const fleet = state.fleetSize;
+  const etsEl = document.getElementById('ets-rate-select');
+  const etsRate = etsEl ? parseInt(etsEl.value) : 50;
+
+  const annualFuelLitres = fleet * (AVG_DISTANCE_KM / 100) * FUEL_CONSUMPTION;
+  const annualTonnes = (annualFuelLitres * CO2_FACTOR) / 1000;
+
+  const cbamNoCVCost = annualTonnes * etsRate * 1.5;
+  const verifiedTonnes = annualTonnes * (1 - EFFICIENCY_GAIN);
+  const cbamWithCVCost = verifiedTonnes * etsRate;
+  const creditIncome = calcAnnualCredits() * CREDIT_PRICE * 0.70;
+  const netCVCost = Math.max(0, cbamWithCVCost - creditIncome);
+  const netBenefit = cbamNoCVCost - netCVCost + creditIncome;
+  const ukTAM = 500000 * (annualTonnes / fleet) * etsRate * 0.15;
+  const daysLeft = Math.ceil((new Date('2027-01-01') - new Date()) / 86400000);
+  const scope3 = annualTonnes * 0.15;
+
+  const el = id => document.getElementById(id);
+  if (!el('cbam-countdown')) return;
+
+  el('cbam-countdown').textContent = formatNum(daysLeft);
+  el('cbam-total-liability').textContent = formatGBP(cbamNoCVCost);
+  el('cbam-total-tonnes').textContent = formatNum(Math.round(annualTonnes));
+  el('cbam-no-data-cost').textContent = formatGBP(cbamNoCVCost);
+  el('cbam-with-data-cost').textContent = formatGBP(netCVCost);
+  el('cbam-net-benefit').textContent = formatGBP(netBenefit);
+  el('bar-label-no').textContent = formatGBP(cbamNoCVCost);
+  el('bar-label-cv').textContent = formatGBP(netCVCost) + ' net cost';
+  el('fleet-net-swing').textContent = formatGBP(netBenefit);
+  el('corp-scope3').textContent = formatNum(Math.round(scope3)) + ' tCO2e';
+  el('corp-cbam-exp').textContent = formatGBP(scope3 * etsRate);
+  el('vc-tam').textContent = formatGBP(ukTAM);
+
+  const cvPct = Math.max(5, (netCVCost / cbamNoCVCost) * 100);
+  setTimeout(() => {
+    const bar = el('cbam-cv-bar');
+    if (bar) bar.style.width = cvPct + '%';
+  }, 200);
+}
+
+// ============================================================
+// DEVELOPER PANEL FUNCTIONS
+// ============================================================
+function updateDevPanel() {
+  const log = document.getElementById("dev-log");
+  if (!log) return;
+  log.innerHTML = connectionLog.map(e => {
+    const colors = { success:"#00FF87", error:"#EF4444", warn:"#F59E0B", info:"#0EA5E9", sim:"#7A9BB5" };
+    return `<div style="display:flex;gap:8px;padding:4px 0;border-bottom:1px solid #111820;font-size:10px;"><span style="color:#3D5A73;flex-shrink:0;">${e.time}</span><span style="color:${colors[e.type]||"#7A9BB5"};">${e.msg}</span></div>`;
+  }).join("");
+}
+
+function enableLiveMode() {
+  CARBONSYNC_CONFIG.SIMULATION_MODE = false;
+  logConnection("Switching to LIVE mode...", "info");
+  updateRigConnectionUI(false);
+  connectRealRig();
+}
+
+function enableSimMode() {
+  CARBONSYNC_CONFIG.SIMULATION_MODE = true;
+  if (rigSocket) rigSocket.close();
+  rigConnected = false;
+  updateRigConnectionUI(false);
+  logConnection("Switched to simulation mode", "sim");
+}
+
+function toggleDevPanel() {
+  devPanelVisible = !devPanelVisible;
+  const panel = document.getElementById("dev-panel");
+  if (panel) panel.style.display = devPanelVisible ? "block" : "none";
+  if (devPanelVisible) {
+    logConnection("Dev panel opened", "info");
+    document.getElementById("dev-version").textContent = `v${CARBONSYNC_CONFIG.VERSION}`;
+    document.getElementById("dev-endpoint").textContent = CARBONSYNC_CONFIG.WS_ENDPOINT;
+  }
+}
+
+// Ctrl+D keyboard shortcut
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === "d") {
+    e.preventDefault();
+    if (document.getElementById("app").style.display !== "none") toggleDevPanel();
+  }
+});
+</script>
+</body>
+</html>
